@@ -1,3 +1,3 @@
 package playground.trading
 
-case class Trade(symbol: String, quantity: Long, price: Float)
+case class Trade(symbol: String, quantity: Long, price: Float, tradeEngineId: String)

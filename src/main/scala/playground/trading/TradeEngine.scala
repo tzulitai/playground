@@ -53,7 +53,7 @@ class TradeEngine extends RichCoProcessFunction[Position, Bid, Trade] {
   }
 
   private def makeTrade(bid: Bid, out: Collector[Trade]): Unit = {
-    out.collect(Trade(bid.symbol, bid.quantity, bid.price))
+    out.collect(Trade(bid.symbol, bid.quantity, bid.price, getTradeEngineId))
   }
 
   private def updatePosition(position: Position, bid: Bid): Position = {
@@ -78,6 +78,10 @@ class TradeEngine extends RichCoProcessFunction[Position, Bid, Trade] {
 
   private def haveInventory(bid: Bid, position: Position): Boolean = {
     null != position && position.quantity >= bid.quantity
+  }
+
+  private def getTradeEngineId: String = {
+    "TradeEngine " + (getRuntimeContext.getIndexOfThisSubtask + 1) + "/" + getRuntimeContext.getNumberOfParallelSubtasks
   }
 
 }

@@ -10,17 +10,19 @@ import org.apache.flink.configuration.{ConfigConstants, Configuration}
 import org.apache.flink.runtime.query.QueryableStateClient
 import org.apache.flink.runtime.query.netty.message.KvStateRequestSerializer
 import org.apache.flink.runtime.state.{VoidNamespace, VoidNamespaceSerializer}
+import org.apache.log4j.{Level, Logger}
 
 import scala.concurrent.Await
 import scala.concurrent.duration.FiniteDuration
 
 object PositionQuery {
   def main(args: Array[String]) {
+    Logger.getLogger("akka.event.slf4j.Slf4jLogger").setLevel(Level.OFF)
 
     // Parse command line args
     val parameterTool = ParameterTool.fromArgs(args)
     val jobId = JobID.fromHexString(parameterTool.get("job"))
-    val symbols = parameterTool.get("symbols").split(",")
+    val symbols = Set("MICR","AAPL","GOOG","REDH")
 
     val config = new Configuration()
     config.setString(ConfigConstants.JOB_MANAGER_IPC_ADDRESS_KEY, "localhost")
@@ -55,6 +57,8 @@ object PositionQuery {
     }
 
     val headings = List("SYMBOL", "SHARES", "BUY PRICE", "ASK PRICE", "LAST TRADE PRICE", "PROFIT")
+    println
+    println
     print(Tabulator.format(headings +: positions.toList.filter(_.nonEmpty)))
   }
 }
